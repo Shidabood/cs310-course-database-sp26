@@ -1,6 +1,7 @@
 package edu.jsu.mcis.cs310.tas_sp26.dao;
 
 import java.sql.*;
+import edu.jsu.mcis.cs310.tas_sp26.dao.*;
 
 public final class DAOFactory {
 
@@ -42,5 +43,8 @@ public final class DAOFactory {
 
     public DepartmentDAO getDepartmentDAO() {
         return new DepartmentDAO(this);
+    }
+    public PunchDAO getPunchDAO(){
+        return new PunchDAO(this);
     }
 }

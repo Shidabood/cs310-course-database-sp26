@@ -3,6 +3,8 @@ package edu.jsu.mcis.cs310.tas_sp26;
 import edu.jsu.mcis.cs310.tas_sp26.dao.DAOFactory;
 import org.junit.*;
 import static org.junit.Assert.*;
+import edu.jsu.mcis.cs310.tas_sp26.Department;
+import edu.jsu.mcis.cs310.tas_sp26.dao.DepartmentDAO;
 
 public class DepartmentFindTest {
 
@@ -59,5 +61,25 @@ public class DepartmentFindTest {
         assertEquals("#8 (Shipping), Terminal ID: 107", d3.toString());
 
     }
-
+    /**
+     * Tests retrieval of department ID 2.
+     * Verifies the object is not null and has the correct ID.
+     */
+@Test
+    public void testFindDepartment4() {
+        DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
+        Department d4 = departmentDAO.find(2);
+        assertNotNull(d4);
+        assertEquals(2, d4.getId());
+    }
+    /**
+     * Tests that searching for a non-existent department ID returns null.
+     * Verifies the DAO handles missing records gracefully.
+     */
+    @Test
+    public void testFindDepartmentNotFound() {
+        DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
+        Department d5 = departmentDAO.find(999);
+        assertNull(d5);
+    }
 }

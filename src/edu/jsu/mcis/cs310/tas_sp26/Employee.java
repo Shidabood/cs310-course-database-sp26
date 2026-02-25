@@ -27,6 +27,7 @@ public class Employee {
     private String active;
     private LocalDateTime inactive;
 
+    //Theres a weird issue where if I try to change it to getID instead it breaks the whole thing, even if I change all of the calls to it.
     public int getId() {
         return id;
     }
@@ -122,11 +123,11 @@ public class Employee {
     public void setInactive(LocalDateTime inactive) {
         this.inactive = inactive;
     }
-    
-    
 
-
-    
-    
-    
+    @Override
+    public String toString(){
+        String emp = "ID #"+ id + ": " + lName + ", " + fName + " " + mName + " (#" + badgeID + "), Type: " + typeID + ", Department: " + depID + ", Active: " + active;
+        System.out.println(emp);
+        return emp;
+    }
 }

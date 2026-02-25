@@ -1,7 +1,6 @@
 package edu.jsu.mcis.cs310.tas_sp26.dao;
 
 import java.sql.*;
-import edu.jsu.mcis.cs310.tas_sp26.Employee;
 
 public final class DAOFactory {
 
@@ -36,9 +35,12 @@ public final class DAOFactory {
     public BadgeDAO getBadgeDAO() {
         return new BadgeDAO(this);
     }
-    
-    public EmployeeDAO getEmployeeDAO(){
+
+    public EmployeeDAO getEmployeeDAO() {
         return new EmployeeDAO(this);
     }
 
+    public DepartmentDAO getDepartmentDAO() {
+        return new DepartmentDAO(this);
+    }
 }

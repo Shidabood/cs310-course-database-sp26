@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class PunchDAO {
     
     private static final String QUERY_FIND = "SELECT * FROM event WHERE id = ?";
-    
+    private static final String QUERY_CREATE = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) " + "VALUES (?, ?, ?, ?)";
     private final DAOFactory daoFactory;
     
     public PunchDAO(DAOFactory daoFactory){
@@ -112,7 +112,7 @@ public class PunchDAO {
                 punches.add(p);
             }
         }
-    } catch (SQLException e) {  // ← fixed spelling
+    } catch (SQLException e) { 
         throw new DAOException(e.getMessage());
     }
 
@@ -153,7 +153,7 @@ public class PunchDAO {
 
                         // Look up the department to get its terminal ID
                         DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
-                        Department department = departmentDAO.find(employee.getDepartmentid());
+                        Department department = departmentDAO.find(employee.getId());
 
                         if (department != null) {
                             // Authorize only if terminal IDs match

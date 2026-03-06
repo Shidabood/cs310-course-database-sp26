@@ -9,7 +9,7 @@ import java.sql.*;
  */
 public class DepartmentDAO {
 
-    private DAOFactory daoFactory;
+    private final DAOFactory daoFactory;
 
     public DepartmentDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;

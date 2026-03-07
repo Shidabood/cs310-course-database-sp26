@@ -34,7 +34,7 @@ public class PunchDAO {
     int terminalid;
     String badgeid;
     LocalDateTime ots;
-    int eventtypeid;
+    String eventtypeid;
 
     try {
         PreparedStatement ps = conn.prepareStatement(QUERY_FIND);

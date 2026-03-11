@@ -61,4 +61,68 @@ public final class DAOUtility {
     
     return Jsoner.serialize(jsonMap);
 }
+
+    int totalMinutes = 0;
+
+    for (int i = 0; i + 1 < punchlist.size(); i++) {
+        Punch current = punchlist.get(i);
+        Punch next    = punchlist.get(i + 1);
+        if (current.getPunchtype() == EventType.CLOCK_IN && next.getPunchtype() == EventType.CLOCK_OUT) {
+            LocalDateTime start = current.getAdjustedtimestamp();
+            LocalDateTime stop  = next.getAdjustedtimestamp();
+            if (start != null && stop != null) {
+                totalMinutes += (int) ChronoUnit.MINUTES.between(start, stop);
+            }
+        i++; //skips the paired CLOCK OUT so we don't double-count
+        }
+    }
+    return totalMinutes;
+    }
+  
+    public static double calculateAbsenteeism(ArrayList<Punch> punchlist, Shift shift) {
+        //Collect unique dates on which the employee clocked in
+        Set<LocalDate> workDays = new LinkedHashSet<>();
+        for (Punch p : punchlist) {
+            if (p.getPunchtype() == EventType.CLOCK_IN && p.getAdjustedtimestamp() != null) {
+                workDays.add(p.getAdjustedtimestamp().toLocalDate());
+            }
+        }
+        int scheduledDays = workDays.size();
+        int scheduledMinutes = scheduledDays * shift.getShiftduration();
+
+        if (scheduledMinutes == 0) {
+            return 0.0;
+        }
+        int totalMinutes = calculateTotalMinutes(punchlist, shift);
+        return ((double)(scheduledMinutes - totalMinutes) / scheduledMinutes) * 100.0;
+    }
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift shift) {
+        //Build the per-punch map list
+        ArrayList<HashMap<String, String>> punchMaps = new ArrayList<>();
+        for (Punch p : punchlist) {
+            HashMap<String, String> pMap = new HashMap<>();
+            pMap.put("id", String.valueOf(p.getID()));
+            pMap.put("badgeid", p.getBadge().getId());
+            pMap.put("terminalid", String.valueOf(p.getTerminalid()));
+            pMap.put("punchtype", p.getPunchtype().toString());
+            pMap.put("adjustmenttype", p.getAjustmenttype().toString());
+            pMap.put("originaltimestamp", p.getOriginaltimestamp().format(FMT).toUpperCase());
+            if (p.getAdjustedtimestamp() != null) {
+                pMap.put("adjustedtimestamp", p.getAdjustedtimestamp().format(FMT).toUpperCase());
+            } else {
+                pMap.put("adjustedtimestamp", "");
+            }
+            punchMaps.add(pMap);
+        }
+        //Compute totals
+        int totalMinutes = calculateTotalMinutes(punchlist, shift);
+        double absenteeism  = calculateAbsenteeism(punchlist, shift);
+        //Build outer map
+        //totalminutes is stored as an Integer so json-simple serializes it as a JSON number
+        HashMap<String, Object> json = new HashMap<>();
+        json.put("punchlist", punchMaps);
+        json.put("totalminutes", totalMinutes);
+        json.put("absenteeism", String.format("%.2f%%", absenteeism));
+        return Jsoner.serialize(json);
+    }
 }

@@ -4,16 +4,16 @@
  */
 package edu.jsu.mcis.cs310.tas_sp26;
 import edu.jsu.mcis.cs310.tas_sp26.dao.PunchDAO;
-
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+import com.github.cliftonlabs.json_simple.*;
 /**
  *
  * @author emiel
  */
 //this will represent a single punch
-    public class Punch {
+    public class Punch implements Jsonable {
         private Integer id; //can be null
         private final int terminalid; 
         private final Badge badge;
@@ -83,6 +83,36 @@ import java.time.format.DateTimeFormatter;
         }
         //printAdjusted() pretty printing for the adjusted timestamp
        
+        //Granular Object Serialization-Cole
         
+        @Override
+        public String toJson() {
+            return Jsoner.serialize(toJsonObject());
+        }
+
+        @Override
+        public void toJson(Writer writer) throws IOException {
+            toJsonObject().toJson(writer);
+        }
+
+        private JsonObject toJsonObject() {
+            JsonObject json = new JsonObject();
+
+            json.put("id", this.id);
+            json.put("terminalid", this.terminalid);
+            json.put("badge", this.badge);
+            json.put("eventtype", this.punchtype.toString());
+            json.put("originaltimestamp", originaltimestamp.format(FMT));
+
+            if (adjustedtimestamp != null) {
+                json.put("adjustedtimestamp", adjustedtimestamp.format(FMT));
+                json.put("adjustmenttype", adjustmenttype.toString());
+            } else {
+                json.put("adjustedtimestamp", null);
+                json.put("adjustmenttype", null);
+            }
+
+            return json;
+        }
 }
   

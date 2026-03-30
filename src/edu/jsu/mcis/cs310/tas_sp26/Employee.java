@@ -3,14 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package edu.jsu.mcis.cs310.tas_sp26;
-
+import com.github.cliftonlabs.json_simple.*;
+import java.io.*;
 import java.time.*;
 
 /**
  *
  * @author shsmith
  */
-public class Employee {
+public class Employee implements Jsonable {
     
     
     
@@ -27,6 +28,10 @@ public class Employee {
     private String active;
     private LocalDateTime inactive;
 
+    //Added these fields for GOS
+    private Badge badge;
+    private Department department;
+    private Shift shift;
     //Theres a weird issue where if I try to change it to getID instead it breaks the whole thing, even if I change all of the calls to it.
     public int getId() {
         return id;
@@ -130,4 +135,33 @@ public class Employee {
         System.out.println(emp);
         return emp;
     }
+    //Granular Object Serialization
+    @Override
+    public String toJson() {
+        return Jsoner.serialize(toJsonObject());
+    }
+
+    @Override
+    public void toJson(Writer writer) throws IOException {
+        toJsonObject().toJson(writer);
+    }
+
+    private JsonObject toJsonObject() {
+        JsonObject json = new JsonObject();
+
+        json.put("id", String.valueOf(this.id));
+        json.put("firstname", this.fName);
+        json.put("middlename", this.mName);
+        json.put("lastname", this.lName);
+        json.put("employeetype", this.typeID);
+        json.put("active", this.active);
+        json.put("inactive", (inactive == null) ? null : inactive.toString());
+
+        json.put("badge", this.badge);
+        json.put("department", this.department);
+        json.put("shift", this.shift);
+
+        return json;
+    }
+
 }

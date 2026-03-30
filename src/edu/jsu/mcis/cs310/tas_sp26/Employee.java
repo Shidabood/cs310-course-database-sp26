@@ -1,8 +1,10 @@
 package edu.jsu.mcis.cs310.tas_sp26;
 
+import com.github.cliftonlabs.json_simple.*;
+import java.io.*;
 import java.time.*;
 
-public class Employee {
+public class Employee implements Jsonable {
 
     private int id;
     private String badgeID;
@@ -15,6 +17,7 @@ public class Employee {
     private String active;
     private LocalDateTime inactive;
     private Badge badge;
+    private Department department;
     private Shift shift;
 
     public Employee(int id, String badgeID, String fName, String mName, String lName,
@@ -42,6 +45,7 @@ public class Employee {
     public String getActive() { return active; }
     public LocalDateTime getInactive() { return inactive; }
     public Badge getBadge() { return badge; }
+    public Department getDepartment() { return department; }
     public Shift getShift() { return shift; }
 
     public void setId(int id) { this.id = id; }
@@ -55,6 +59,7 @@ public class Employee {
     public void setActive(String active) { this.active = active; }
     public void setInactive(LocalDateTime inactive) { this.inactive = inactive; }
     public void setBadge(Badge badge) { this.badge = badge; }
+    public void setDepartment(Department department) { this.department = department; }
     public void setShift(Shift shift) { this.shift = shift; }
 
     @Override
@@ -64,5 +69,30 @@ public class Employee {
                      ", Active: " + active;
         System.out.println(emp);
         return emp;
+    }
+
+    @Override
+    public String toJson() {
+        return Jsoner.serialize(toJsonObject());
+    }
+
+    @Override
+    public void toJson(Writer writer) throws IOException {
+        toJsonObject().toJson(writer);
+    }
+
+    private JsonObject toJsonObject() {
+        JsonObject json = new JsonObject();
+        json.put("id", String.valueOf(this.id));
+        json.put("firstname", this.fName);
+        json.put("middlename", this.mName);
+        json.put("lastname", this.lName);
+        json.put("employeetype", this.typeID);
+        json.put("active", this.active);
+        json.put("inactive", (inactive == null) ? null : inactive.toString());
+        json.put("badge", this.badge);
+        json.put("department", this.department);
+        json.put("shift", this.shift);
+        return json;
     }
 }

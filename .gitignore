@@ -9,11 +9,15 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/build/
 /dist
+/dist/
 /nbproject
+/nbproject/
 build.xml
 manifest.mf
 /captures
+/captures/
 .externalNativeBuild
 .cxx
 local.properties
